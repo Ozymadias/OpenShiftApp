@@ -17,13 +17,13 @@ public class RestDslRouteBuilder extends RouteBuilder {
          */
         restConfiguration()
                 .component("restlet")
-                .host("localhost").port("8080")
-                .bindingMode(RestBindingMode.auto);
+                .host("localhost").port("8085")
+                .bindingMode(RestBindingMode.json);
 
         /**
          * Configure the REST API (POST, GET, etc.)
          */
-        rest().path("/api").consumes("application/json")
+        rest().path("/").consumes("application/json")
                 .get()
                     .to("bean:helloBean");
     }
