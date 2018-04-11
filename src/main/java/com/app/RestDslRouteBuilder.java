@@ -1,6 +1,10 @@
 package com.app;
 
+import com.app.bean.HelloBean;
+import org.apache.camel.Exchange;
 import org.apache.camel.builder.RouteBuilder;
+import org.apache.camel.component.jackson.JacksonDataFormat;
+import org.apache.camel.model.dataformat.JsonLibrary;
 import org.apache.camel.model.rest.RestBindingMode;
 import org.springframework.stereotype.Component;
 
@@ -26,5 +30,10 @@ public class RestDslRouteBuilder extends RouteBuilder {
         rest().path("/").consumes("application/json")
                 .get()
                     .to("bean:helloBean");
+
+        from("rest:get:hello?name={name}").bean(HelloBean.class, "sayHello(${header.name})").marshal().json(JsonLibrary.Jackson);
+//                .transform().simple("Hello ${header.name}");
+
+//        from("direct:start").setHeader(Exchange.HTTP_METHOD).simple("name=${body}").
     }
 }
