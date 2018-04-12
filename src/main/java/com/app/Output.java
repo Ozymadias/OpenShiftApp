@@ -1,11 +1,8 @@
 package com.app;
 
-import org.springframework.stereotype.Component;
-
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-@Component
 public class Output {
     private String message;
     private LocalDateTime time;
@@ -15,7 +12,7 @@ public class Output {
         return message;
     }
 
-    public void setMessage(String message) {
+    void setMessage(String message) {
         this.message = message;
     }
 
@@ -23,18 +20,7 @@ public class Output {
         return time.format(formatter);
     }
 
-    public void setTime(LocalDateTime time) {
+    void setTime(LocalDateTime time) {
         this.time = time;
-    }
-
-//    public Output(String message, LocalDateTime time) {
-//        this.message = message;
-//        this.time = time;
-//    }
-
-    public Output create(String name) {
-        this.message = "Hello " + name;
-        this.time = LocalDateTime.now();
-        return this;
     }
 }
