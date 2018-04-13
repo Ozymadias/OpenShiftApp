@@ -23,4 +23,8 @@ public class Output {
     void setTime(LocalDateTime time) {
         this.time = time;
     }
+
+    LocalDateTime getTimeAsLocalDateTime() {
+        return time;
+    }
 }
