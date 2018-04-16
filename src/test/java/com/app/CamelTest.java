@@ -1,5 +1,7 @@
 package com.app;
 
+import org.apache.camel.EndpointInject;
+import org.apache.camel.ProducerTemplate;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.mock.MockEndpoint;
 import org.apache.camel.model.RouteDefinition;
@@ -13,6 +15,9 @@ import static org.hamcrest.Matchers.anyOf;
 import static org.hamcrest.core.Is.is;
 
 public class CamelTest extends CamelTestSupport {
+//    @EndpointInject(uri = "{{animalSource}}")
+//    protected ProducerTemplate animalSource;
+
     @Test
     public void testHttpInterceptSendToEndpoint() throws Exception {
         RouteDefinition route = context.getRouteDefinitions().get(0);
@@ -28,7 +33,8 @@ public class CamelTest extends CamelTestSupport {
 
         String before = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 
-        template.requestBody("http://localhost:8085/hello?name=World", "");
+        template.requestBodyAndHeader("{{animalSource}}", "", "name", "World");
+//        animalSource.requestBodyAndHeader("", "name", "World");
 
         assertMockEndpointsSatisfied();
         Output output = mockEndpoint.getReceivedExchanges().get(0).getIn().getBody(Output.class);

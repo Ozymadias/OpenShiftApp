@@ -17,7 +17,7 @@ public class RestDslRouteBuilder extends RouteBuilder {
                 .host("localhost").port("8085")
                 .bindingMode(RestBindingMode.json);
 
-        from("rest:get:hello?name={name}").multicast().aggregationStrategy((oldExchange, newExchange) -> {
+        from("rest:get:hello").multicast().aggregationStrategy((oldExchange, newExchange) -> {
             if (oldExchange == null)
                 return newExchange;
             Output oldOutput = oldExchange.getIn().getBody(Output.class);
