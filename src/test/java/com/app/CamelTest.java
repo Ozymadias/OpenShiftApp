@@ -6,6 +6,12 @@ import org.apache.camel.model.RouteDefinition;
 import org.apache.camel.test.junit4.CamelTestSupport;
 import org.junit.Test;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
+import static org.hamcrest.Matchers.anyOf;
+import static org.hamcrest.core.Is.is;
+
 public class CamelTest extends CamelTestSupport {
     @Test
     public void testHttpInterceptSendToEndpoint() throws Exception {
@@ -13,20 +19,23 @@ public class CamelTest extends CamelTestSupport {
         route.adviceWith(context, new RouteBuilder() {
             @Override
             public void configure() throws Exception {
-                interceptSendToEndpoint("direct:sth").to("mock:http").skipSendToOriginalEndpoint();
+                interceptSendToEndpoint("direct:intermediary").to("mock:http").skipSendToOriginalEndpoint();
             }
         });
 
         MockEndpoint mockEndpoint = getMockEndpoint("mock:http");
         mockEndpoint.expectedMessageCount(1);
 
-        template.requestBody("http://localhost:8085/hello?name=World", "S");
+        String before = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+
+        template.requestBody("http://localhost:8085/hello?name=World", "");
 
         assertMockEndpointsSatisfied();
         Output output = mockEndpoint.getReceivedExchanges().get(0).getIn().getBody(Output.class);
 
         assertNotNull(output);
         assertEquals("Hello World", output.getMessage());
+        assertThat(output.getTime(), anyOf(is(before), is(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))));
     }
 
     @Override
