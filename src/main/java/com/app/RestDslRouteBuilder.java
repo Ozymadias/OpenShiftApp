@@ -27,7 +27,7 @@ public class RestDslRouteBuilder extends RouteBuilder {
             else
                 oldOutput.setMessage(newOutput.getMessage());
             return oldExchange;
-        }).parallelProcessing().enrich("direct:message").enrich("direct:time").end().marshal().json(JsonLibrary.Jackson);
+        }).parallelProcessing().enrich("direct:message").enrich("direct:time").end().to("direct:sth");//marshal().json(JsonLibrary.Jackson);
 
         from("direct:message").process(exchange -> {
             Output output = new Output();
