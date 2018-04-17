@@ -33,7 +33,7 @@ public class CamelTest extends CamelTestSupport {
 
         String before = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 
-        template.requestBodyAndHeader("{{animalSource}}", "", "name", "World");
+        template.requestBodyAndHeader("rest:get:hello", "", "name", "World");
 //        animalSource.requestBodyAndHeader("", "name", "World");
 
         assertMockEndpointsSatisfied();
