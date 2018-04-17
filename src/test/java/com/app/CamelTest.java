@@ -28,7 +28,7 @@ public class CamelTest extends CamelTestSupport {
 
         String before = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 
-        template.requestBody("http://localhost:8085/hello?name=World", "");
+        template.requestBody("rest:get:hello?name=World", "");
 
         assertMockEndpointsSatisfied();
         Output output = mockEndpoint.getReceivedExchanges().get(0).getIn().getBody(Output.class);
