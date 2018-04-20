@@ -17,30 +17,20 @@ public class RestDslRouteBuilder extends RouteBuilder {
                 .host("localhost").port("8085")
                 .bindingMode(RestBindingMode.json);
 
-        from("rest:get:hello?name={name}").multicast().aggregationStrategy((oldExchange, newExchange) -> {
-            if (oldExchange == null)
-                return newExchange;
-            Output oldOutput = oldExchange.getIn().getBody(Output.class);
-            Output newOutput = newExchange.getIn().getBody(Output.class);
-            if (newOutput.getMessage() == null)
-                oldOutput.setTime(newOutput.getTimeAsLocalDateTime());
-            else
-                oldOutput.setMessage(newOutput.getMessage());
-            return oldExchange;
-        }).parallelProcessing().enrich("direct:message").enrich("direct:time").end().to("direct:intermediary");
+        from("rest:get:hello?name={name}")
+                .process(exchange -> {exchange.getIn().setBody(new Output());})
+                .multicast()
+                .parallelProcessing().to("direct:message").to("direct:time").end()
+                .to("direct:intermediary");
 
         from("direct:intermediary").marshal().json(JsonLibrary.Jackson);
 
         from("direct:message").process(exchange -> {
-            Output output = new Output();
-            output.setMessage("Hello " + exchange.getIn().getHeaders().get("name"));
-            exchange.getOut().setBody(output);
+            exchange.getIn().getBody(Output.class).setMessage("Hello " + exchange.getIn().getHeaders().get("name"));
         });
 
         from("direct:time").process(exchange -> {
-            Output output = new Output();
-            output.setTime(LocalDateTime.now());
-            exchange.getOut().setBody(output);
+            exchange.getIn().getBody(Output.class).setTime(LocalDateTime.now());
         });
     }
 }
