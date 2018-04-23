@@ -14,7 +14,7 @@ public class MyRouteBuilder extends RouteBuilder {
     public void configure() {
         restConfiguration()
                 .component("restlet")//todo: kto to robi pod spodem
-                .host("localhost").port("8085")
+                .host("0.0.0.0").port("8085")
                 .bindingMode(RestBindingMode.json);
 
         from("rest:get:hello?name={name}")
