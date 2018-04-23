@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDateTime;
 
 @Component
-public class RestDslRouteBuilder extends RouteBuilder {
+public class MyRouteBuilder extends RouteBuilder {
 
     @Override
     public void configure() {

@@ -14,11 +14,11 @@ import static org.hamcrest.core.Is.is;
 
 public class CamelTest extends CamelTestSupport {
     @Test
-    public void testHttpInterceptSendToEndpoint() throws Exception {
+    public void integration() throws Exception {
         RouteDefinition route = context.getRouteDefinitions().get(0);
         route.adviceWith(context, new RouteBuilder() {
             @Override
-            public void configure() throws Exception {
+            public void configure() {
                 interceptSendToEndpoint("direct:intermediary").to("mock:http").skipSendToOriginalEndpoint();
             }
         });
@@ -40,6 +40,6 @@ public class CamelTest extends CamelTestSupport {
 
     @Override
     protected RouteBuilder createRouteBuilder() {
-        return new RestDslRouteBuilder();
+        return new MyRouteBuilder();
     }
 }
