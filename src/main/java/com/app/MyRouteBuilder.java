@@ -1,5 +1,6 @@
 package com.app;
 
+import org.apache.camel.LoggingLevel;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.model.dataformat.JsonLibrary;
 import org.apache.camel.model.rest.RestBindingMode;
@@ -19,11 +20,21 @@ public class MyRouteBuilder extends RouteBuilder {
 
         from("rest:get:hello?name={name}")
                 .process(exchange -> {exchange.getIn().setBody(new Output());})
-                .multicast()
-                .parallelProcessing().to("direct:message").to("direct:time").end()
-                .to("direct:intermediary");
+//                @formatter:off
+                .multicast().id("m")
+                    .parallelProcessing()
+                    .to("direct:message")
+                    .to("direct:time")
+                .end()
 
-        from("direct:intermediary").marshal().json(JsonLibrary.Jackson);
+//                .to("direct:intermediary");
+
+
+//        from("direct:intermediary")
+//                .log(LoggingLevel.DEBUG, "logger", "Dummy log : ${body}").id("loggerId")
+            .marshal()
+                .json(JsonLibrary.Jackson);
+//                @formatter:on
 
         from("direct:message").process(exchange -> {
             exchange.getIn().getBody(Output.class).setMessage("Hello " + exchange.getIn().getHeaders().get("name"));
