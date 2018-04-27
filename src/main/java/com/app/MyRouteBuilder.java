@@ -14,11 +14,11 @@ public class MyRouteBuilder extends RouteBuilder {
     public void configure() {
         restConfiguration()
                 .component("restlet")//todo: kto to robi pod spodem
-                .host("0.0.0.0").port("8085")
+                .host("0.0.0.0").port("8086")
                 .bindingMode(RestBindingMode.json);
 
         from("rest:get:hello?name={name}")
-                .process(exchange -> {exchange.getIn().setBody(new Output());})
+                .process(exchange -> {exchange.getIn().setBody(new OldOutput());})
                 .multicast()
                 .parallelProcessing().to("direct:message").to("direct:time").end()
                 .to("direct:intermediary");
@@ -26,11 +26,11 @@ public class MyRouteBuilder extends RouteBuilder {
         from("direct:intermediary").marshal().json(JsonLibrary.Jackson);
 
         from("direct:message").process(exchange -> {
-            exchange.getIn().getBody(Output.class).setMessage("Hello " + exchange.getIn().getHeaders().get("name"));
+            exchange.getIn().getBody(OldOutput.class).setMessage("Hello " + exchange.getIn().getHeaders().get("name"));
         });
 
         from("direct:time").process(exchange -> {
-            exchange.getIn().getBody(Output.class).setTime(LocalDateTime.now());
+            exchange.getIn().getBody(OldOutput.class).setTime(LocalDateTime.now());
         });
     }
 }

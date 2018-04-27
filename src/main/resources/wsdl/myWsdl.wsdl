@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<wsdl:definitions name="whatIsThis"
+                  targetNamespace="app.com"
+                  xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+                  xmlns:tns="app.com"
+                  xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+                  xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+
+    <!-- wsdl:types :: Defines the XML schema and data types used by the web service -->
+    <wsdl:types>
+        <xsd:schema targetNamespace="app.com">
+            <xsd:element name="input">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="name" type="xsd:string"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="output">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="message" type="xsd:string"/>
+                        <xsd:element name="time" type="xsd:string"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+        </xsd:schema>
+    </wsdl:types>
+
+    <!-- wsdl:message :: Defines the data for input and output operation -->
+    <wsdl:message name="Request">
+        <wsdl:part element="tns:input" name="requestPart"/>
+    </wsdl:message>
+    <wsdl:message name="Response">
+        <wsdl:part element="tns:output" name="responsePart"/>
+    </wsdl:message>
+
+    <!-- wsdl:portType :: Defines input and output operations that can be performed with the service -->
+    <wsdl:portType name="myInterface">
+        <wsdl:operation name="process">
+            <!--<wsdl:input message="tns:Request" name="input"/>-->
+            <!--<wsdl:output message="tns:Response" name="output"/>-->
+            <wsdl:input message="tns:Request"/>
+            <wsdl:output message="tns:Response"/>
+        </wsdl:operation>
+    </wsdl:portType>
+
+    <!-- wsdl:binding :: Defines the protocol and data format for each port type use="literal"-->
+    <wsdl:binding name="soapBinging" type="tns:myInterface">
+        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="process">
+            <wsdl:input>
+                <soap:body use="literal"/>
+                <!--<soap:body parts="requestPart" use="literal"/>-->
+            </wsdl:input>
+            <wsdl:output>
+                <!--<soap:body parts="responsePart" use="literal"/>-->
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+
+    <!-- wsdl:service :: Defines service details -->
+    <wsdl:service name="soapEndpointService">
+        <wsdl:port binding="tns:soapBinging" name="soapEndpoint">
+            <!--<soap:address location="http://localhost:8080/service/welcome"/>-->
+        </wsdl:port>
+    </wsdl:service>
+</wsdl:definitions>

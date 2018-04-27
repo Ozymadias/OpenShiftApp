@@ -3,7 +3,7 @@ package com.app;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-public class Output {
+public class OldOutput {
     private String message;
     private LocalDateTime time;
     private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
