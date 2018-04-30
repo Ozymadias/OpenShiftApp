@@ -31,7 +31,7 @@ public class CamelTest extends CamelTestSupport {
         template.requestBody("rest:get:hello?name=World", "");
 
         assertMockEndpointsSatisfied();
-        OldOutput output = mockEndpoint.getReceivedExchanges().get(0).getIn().getBody(OldOutput.class);
+        Output output = mockEndpoint.getReceivedExchanges().get(0).getIn().getBody(Output.class);
 
         assertNotNull(output);
         assertEquals("Hello World", output.getMessage());
