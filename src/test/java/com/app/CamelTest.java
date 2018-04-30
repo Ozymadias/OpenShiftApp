@@ -1,5 +1,6 @@
 package com.app;
 
+import org.apache.camel.builder.AdviceWithRouteBuilder;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.mock.MockEndpoint;
 import org.apache.camel.model.RouteDefinition;
@@ -16,10 +17,10 @@ public class CamelTest extends CamelTestSupport {
     @Test
     public void integration() throws Exception {
         RouteDefinition route = context.getRouteDefinitions().get(0);
-        route.adviceWith(context, new RouteBuilder() {
+        route.adviceWith(context, new AdviceWithRouteBuilder() {
             @Override
             public void configure() {
-                interceptSendToEndpoint("direct:intermediary").to("mock:http").skipSendToOriginalEndpoint();
+                weaveById("multicast").after().to("mock:http");
             }
         });
 
@@ -28,11 +29,11 @@ public class CamelTest extends CamelTestSupport {
 
         String before = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 
-        template.requestBody("rest:get:hello?name=World", "");
+//        template.requestBody("http://localhost:8085/hello?name=World", "");
+        template.requestBodyAndHeader("direct:sth", new Output(), "name", "World");
 
         assertMockEndpointsSatisfied();
         Output output = mockEndpoint.getReceivedExchanges().get(0).getIn().getBody(Output.class);
-
         assertNotNull(output);
         assertEquals("Hello World", output.getMessage());
         assertThat(output.getTime(), anyOf(is(before), is(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))));

@@ -22,7 +22,7 @@ public class MyRouteBuilder extends RouteBuilder {
 
         from("direct:sth")
                 .process(exchange -> {exchange.getIn().setBody(new Output());})
-                .multicast()
+                .multicast().id("multicast")
                 .parallelProcessing().to("direct:message").to("direct:time").end();
 
         from("direct:message").process(exchange -> {
