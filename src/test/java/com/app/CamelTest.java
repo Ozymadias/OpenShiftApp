@@ -10,9 +10,6 @@ import org.junit.Test;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-import static org.hamcrest.Matchers.anyOf;
-import static org.hamcrest.core.Is.is;
-
 public class CamelTest extends CamelTestSupport {
     @Test
     public void integration() throws Exception {
@@ -29,18 +26,18 @@ public class CamelTest extends CamelTestSupport {
 
         String before = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 
-//        template.requestBody("http://localhost:8085/hello?name=World", "");
         template.requestBodyAndHeader("direct:sth", new Output(), "name", "World");
 
         assertMockEndpointsSatisfied();
         Output output = mockEndpoint.getReceivedExchanges().get(0).getIn().getBody(Output.class);
         assertNotNull(output);
         assertEquals("Hello World", output.getMessage());
-        assertThat(output.getTime(), anyOf(is(before), is(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))));
+        assertTrue(output.getTime().compareTo(before) >= 0);
+        assertTrue(output.getTime().compareTo(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))) <= 0);
     }
 
     @Override
     protected RouteBuilder createRouteBuilder() {
-        return new MyRouteBuilder();
+        return new InternalRouteBuilder();
     }
 }
